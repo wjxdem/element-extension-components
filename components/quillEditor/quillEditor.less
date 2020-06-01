@@ -1,0 +1,31 @@
+@charset "utf-8";
+.lu-quill-editor {
+  .edit_container {
+    text-align: left;
+    .ql-snow {
+      .ql-tooltip {
+        left: 10px !important;
+      }
+    }
+
+    .ql-toolbar {
+      min-height: 30px;
+      max-height: 90px;
+      line-height: 20px !important;
+      &.ql-snow{
+        border-color: #dcdfe6;
+        border-radius: 4px 4px 0 0;
+      }
+
+      &:after {
+        display: block;
+      }
+    }
+    .ql-container{
+      &.ql-snow{
+        border-color: #dcdfe6;
+        border-radius: 0 0 4px 4px;
+      }
+    }
+  }
+}
