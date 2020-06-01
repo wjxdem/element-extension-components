@@ -27,7 +27,7 @@ const container = [
 const customOptions = [['image']];
 
 export default {
-  name: 'lu-quill-editor',
+  name: 'quill-editor',
   data: getData,
   components: {
     quillEditor,
@@ -73,8 +73,8 @@ function getData() {
           name: 'img',
           size: 4,
           action: `${domain}/upload/file?url=${encodeURIComponent(
-            '/luckydevplatform/common/attachment/upload'
-          )}&name=attachment&_csrf=${window.pageConfig._csrf}`,
+            'your/attachment/upload'
+          )}&name=attachment`,
           response: res => {
             return res.data.url;
           }
