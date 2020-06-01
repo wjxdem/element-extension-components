@@ -1,23 +1,23 @@
 @charset "utf-8";
-.lu-quill-editor .edit_container {
+.quill-editor .edit_container {
   text-align: left;
 }
-.lu-quill-editor .edit_container .ql-snow .ql-tooltip {
+.quill-editor .edit_container .ql-snow .ql-tooltip {
   left: 10px !important;
 }
-.lu-quill-editor .edit_container .ql-toolbar {
+.quill-editor .edit_container .ql-toolbar {
   min-height: 30px;
   max-height: 90px;
   line-height: 20px !important;
 }
-.lu-quill-editor .edit_container .ql-toolbar.ql-snow {
+.quill-editor .edit_container .ql-toolbar.ql-snow {
   border-color: #dcdfe6;
   border-radius: 4px 4px 0 0;
 }
-.lu-quill-editor .edit_container .ql-toolbar:after {
+.quill-editor .edit_container .ql-toolbar:after {
   display: block;
 }
-.lu-quill-editor .edit_container .ql-container.ql-snow {
+.quill-editor .edit_container .ql-container.ql-snow {
   border-color: #dcdfe6;
   border-radius: 0 0 4px 4px;
 }
