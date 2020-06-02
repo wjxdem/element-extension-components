@@ -1,0 +1,96 @@
+<div class="common-table">
+  <div class="table">
+    <el-table class="commonTable" ref="sortTable" :clearSort="clearSort" :border="dragWidth" :data="contents"
+      :height="tableHeight" :header-cell-style="{background:'#F2F3F6',color:'#303133'}"
+      :default-sort="defaultsort" @sort-change="handlesort" @selection-change="handleSelectionChange">
+      <el-table-column v-if="isMultipleSelect" :selectable="handleSelectable" type="selection">
+      </el-table-column>
+      <el-table-column v-for="(col, index) in columns" :key="index" :label="col.label"
+        :min-width="col.width? col.width: 80" :width="col.absoluteWidth? col.absoluteWidth : false"
+        :fixed="col.fixed? col.fixed: false" :show-overflow-tooltip="col.showTooltip"
+        :align="col.align? col.align: 'left'" :sortable="col.sortable" :prop="col.prop">
+        <template slot-scope="scope">
+          <!-- <span :class="col.class"> -->
+          <!--连接文字-->
+          <span v-if="col.type === 'link'" @click="col.onClick(scope.row)"><span
+              v-if="col.no">【{{scope.row[col.no]}}】</span>{{scope.row[col.prop]}}</span>
+          <!--一般文字-->
+          <span v-if="col.type === 'text' || col.type === undefined"
+            :style="{color: (scope.row['disable']? '#C0C4CD': (col.color? col.color : ''))}">
+            <span v-if="typeof scope.row[col.prop] === 'string'">{{scope.row[col.prop]}}</span>
+            <span v-else-if="scope.row[col.prop] === null">--</span>
+            <span v-else-if="typeof scope.row[col.prop] === 'number'">{{scope.row[col.prop]+''}}</span>
+            <span v-else-if="scope.row[col.prop] instanceof Array">
+              <p v-for="str of scope.row[col.prop]">{{str}}</p>
+            </span>
+          </span>
+          <!--v-html文字-->
+          <span v-if="col.type === 'html'">
+            <span v-if="typeof scope.row[col.prop] === 'string'">
+              <span v-html="scope.row[col.prop]"></span>
+            </span>
+            <span v-else-if="scope.row[col.prop] === null">--</span>
+          </span>
+          <!--a标签-->
+          <!-- <a v-if="col.type === 'routerlink'" href = col.linkName>{{scope.row[col.prop]}}</a> -->
+          <span v-if="col.type === 'routerlink'&&scope.row[col.prop]" @click="col.onClick(scope.row)">
+            <a :href="$link(col.linkName + (scope.row[col.paramsName]? scope.row[col.paramsName]: ''))"
+              onclick="return false">
+              <span v-if="col.no">【{{scope.row[col.no]}}】</span>
+              {{scope.row[col.prop]}}
+            </a>
+          </span>
+          <span v-else-if="col.type === 'routerlink'&&!scope.row[col.prop]">--</span>
+          <!--编辑框-->
+          <div v-else-if="col.type==='input'">
+            <el-input v-model="scope.row.todayConsumeTime"></el-input>
+          </div>
+          <!--序号从1开始-->
+          <div v-else-if="col.type==='index'">
+            {{scope.$index+1}}
+          </div>
+          <!--按钮-->
+          <el-link v-if="col.type === 'button' && scope.row[col.prop]" type="primary" @click="col.onClick(scope.row)"
+            :style="{color: (scope.row['disable']? '#C0C4CD': (col.color? col.color : ''))}" :underline="false">
+            {{scope.row[col.prop]}}
+          </el-link>
+          <span v-else-if="col.type === 'button' && !scope.row[col.prop]">--</span>
+          <!--多个链接以 | 分割-->
+          <div v-else-if="col.type === 'buttons'">
+            <span v-if='(scope.row[col.prop]? scope.row[col.prop]: col.prop).length > 0'>
+              <span v-for="(button, index) in scope.row[col.prop]? scope.row[col.prop]: col.prop">
+                <span v-if="index!==0" class="cutline"> |</span>
+                <el-link :type="button.type" @click="button.onClick(scope.row)" :underline="false">
+                  {{button.text}}
+                </el-link>
+              </span>
+            </span>
+            <span v-else>--</span>
+          </div>
+          <!-- </div> -->
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="bottom-hint" v-if="bottomHint">
+      <span class="line">———</span>
+      <span class="hint">{{bottomHint.content}}</span>
+      <span class="line">———</span>
+    </div>
+    <div class="bottom-left_button" v-if="bottomLeftButton">
+      <el-link :type="bottomLeftButton.type? bottomLeftButton.type: 'primary'" @click="bottomLeftButton.onClick()"
+        :underline="false">
+        {{bottomLeftButton.text}}
+      </el-link>
+    </div>
+  </div>
+
+  <div align="end">
+    <el-pagination v-if="pagination && pagination.total" class="pagination" small background
+      @size-change="pagination.sizeChange" @current-change="pagination.currentPageChange"
+      :current-page="pagination.currentPage?pagination.currentPage: 0 "
+      :page-sizes="pagination.pageSizes? pagination.pageSizes: [10, 20, 50]"
+      :page-size="pagination.currentPageSize? pagination.currentPageSize: 20"
+      layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
+    </el-pagination>
+  </div>
+</div>

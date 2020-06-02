@@ -1,0 +1,149 @@
+@charset "utf-8";
+.common-table {
+  .table {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #ebeef5;
+    border-bottom-width: 0;
+    box-sizing: border-box;
+
+    .el-table {
+      font-size: 14px;
+      background: white;
+      &::before {
+        height: 0 !important;
+      }
+    }
+    .el-link {
+      font-size: 14px;
+    }
+
+    .bottom-hint {
+      height: 37px;
+      text-align: center;
+      line-height: 37px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(229, 232, 238, 1);
+      .line {
+        color: #e5e6ec;
+      }
+      .hint {
+        margin-left: 15px;
+        margin-right: 15px;
+        color: #606266;
+      }
+    }
+    .bottom-left_button {
+      height: 37px;
+      line-height: 37px;
+      font-size: 14px;
+      margin-left: 4px;
+    }
+  }
+  .red {
+    color: #f56c6c;
+  }
+  .blue {
+    color: #409eff;
+  }
+  .canClick {
+    color: #409eff;
+    cursor: pointer;
+  }
+  .pagination {
+    font-size: 14px;
+    margin-top: 15px;
+
+    .el-pagination__jump {
+      font-size: 14px;
+    }
+
+    .el-input__inner {
+      font-size: 14px;
+    }
+
+    .el-pager li {
+      font-size: 14px;
+      height: 24px;
+      line-height: 24px;
+    }
+
+    .el-input--mini .el-input__inner {
+      height: 24px;
+    }
+  }
+
+  .cutline {
+    color: #e5e6ec;
+  }
+
+  .priority {
+    .priority-1 {
+      .img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .text {
+        color: #f56c6c;
+        margin-left: 4px;
+      }
+    }
+
+    .priority-2 {
+      .img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .text {
+        color: #e6a23c;
+        margin-left: 4px;
+      }
+    }
+
+    .priority-3 {
+      .img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .text {
+        color: #409eff;
+        margin-left: 4px;
+      }
+    }
+
+    .priority-4 {
+      .img {
+        width: 14px;
+        height: 14px;
+      }
+
+      .text {
+        color: #67c23a;
+        margin-left: 4px;
+      }
+    }
+  }
+  a {
+    text-decoration: none;
+    color: #409eff;
+  }
+}
+
+.el-table__empty-block {
+  min-height: auto;
+  border-bottom: 1px solid rgba(229, 232, 238, 1);
+}
+
+.el-table__empty-text {
+  line-height: 36px;
+}
+.el-table-column--selection .cell {
+  overflow: unset;
+}
+
+.el-table__row {
+  height: 45px;
+}
