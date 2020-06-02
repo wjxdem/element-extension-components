@@ -17,12 +17,7 @@ import './commonTable.less';
     ></common-table>
  * columns: [{ prop: 'typeDesc', label: '需求类型', type: 'text',onClick: data => {
  *           if (data.type === 4) {
- *             this.$emit('showDrawer', {
- *               title: '需求变更详情',
- *               id: data.taskNo
- *             });
- *           } else {
- *             this.$emit('showDrawer', { title: '需求详情', id: data.taskNo });
+ *             this.$emit('aaa', { id: data.id });
  *           }
  *         }, width: 100 }...],
  * tableData: [],
