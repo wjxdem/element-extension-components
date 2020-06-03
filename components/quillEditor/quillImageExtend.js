@@ -53,46 +53,145 @@ export class ImageExtend {
    * @param e
    */
   pasteHandle(e) {
-    // e.preventDefault()
     QuillWatch.emit(this.quill.id, 0);
-    let clipboardData = e.clipboardData;
-    let i = 0;
-    let items, item, types;
-    if (clipboardData) {
-      items = clipboardData.items;
-      //简单过滤超链接形式的图片，影响未知。。。
-      if (!items || items.length > 1) {
-        return;
-      }
-      item = items[0];
-      types = clipboardData.types || [];
-
-      for (; i < types.length; i++) {
-        if (types[i] === 'Files') {
-          item = items[i];
-          break;
-        }
-      }
-      if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
-        this.file = item.getAsFile();
-        let self = this;
-        // 如果图片限制大小
-        if (
-          self.config.size &&
-          self.file.size >= self.config.size * 1024 * 1024
-        ) {
-          if (self.config.sizeError) {
-            self.config.sizeError();
-          }
+    console.log(e);
+    if (e.clipboardData || e.originalEvent) {
+      let clipboardData = e.clipboardData;
+      if (clipboardData.items) {
+        let i = 0;
+        let items, item, types;
+        // for chrome or 新版本火狐
+        items = clipboardData.items;
+        if (!items) {
           return;
         }
-        if (this.config.action) {
-          this.uploadImg();
-        } else {
-          // this.toBase64()
+        // 火狐78版本items[0]有值并且item.kind === 'string'，之前的版本没有值
+        item = items[0];
+        types = clipboardData.types || [];
+
+        for (; i < types.length; i++) {
+          if (types[i] === 'Files') {
+            item = items[i];
+            break;
+          }
         }
+        if (items.length === 0 || (item && item.kind === 'string')) {
+          setTimeout(() => {
+            const imgList = this.quill.container.querySelectorAll('img');
+            const $imgList = $(imgList);
+            let src_str = '';
+            let i;
+            for (i = 0; i < imgList.length; i++) {
+              src_str = imgList[i].src;
+            }
+            // 去掉再带的base64img标签
+            // if(src_str.indexOf('data:image/'>-1)) {
+            //   $imgList.remove();
+            // }
+            const selfFile = this.base64toFile(src_str);
+            if (this.config.action) {
+              $imgList.remove();
+              this.uploadImg(selfFile);
+            } else {
+              this.toBase64();
+            }
+          }, 500);
+        }
+
+        console.log(item);
+        if (item && item.kind === 'file' && item.type.match(/^image\//i)) {
+          console.log(190);
+          //阻止默认行为即不让剪贴板内容在div中显示出来
+          e.preventDefault();
+          this.file = item.getAsFile();
+          let self = this;
+          // 如果图片限制大小
+          if (
+            self.config.size &&
+            self.file.size >= self.config.size * 1024 * 1024
+          ) {
+            if (self.config.sizeError) {
+              self.config.sizeError();
+            }
+            return;
+          }
+          if (this.config.action) {
+            this.uploadImg();
+          } else {
+            this.toBase64();
+          }
+        }
+      } else {
+        // for firefox 老版本
+        // console.log(e.explicitOriginalTarget.innerHTML)
+        // console.log(e.target.childNodes)
+        // const childNodes = e.target.childNodes
+        // const childNodes = e.originalTarget.childNodes
+        // console.log(e)
+        // console.log(childNodes.length)
+        // console.log(childNodes)
+        // for( let i = 0; i< childNodes.length; i++) {
+        //     console.log(childNodes[i].localName)
+        //     if(childNodes[i].localName === 'img') {
+        //         e.preventDefault();
+        //     }
+        // }
+        // e.preventDefault();
+        // 开始
+        setTimeout(() => {
+          const imgList = this.quill.container.querySelectorAll('img');
+          const $imgList = $(imgList);
+          console.log($imgList);
+          let src_str = '';
+          let i;
+          for (i = 0; i < imgList.length; i++) {
+            src_str = imgList[i].src;
+          }
+          if (src_str.indexOf('data:image/' > -1)) {
+            console.log(0);
+            $imgList.remove();
+          }
+          console.log(src_str);
+          // const blob = this.dataURLtoBlob(src_str);
+          // const selfFile = this.dataURLtofile(src_str, 'file');
+          const selfFile = this.base64toFile(src_str);
+          console.log(selfFile);
+          if (this.config.action) {
+            // $imgList.remove();
+            this.uploadImg(selfFile);
+          } else {
+            this.toBase64();
+          }
+        }, 500);
       }
+      console.log(56);
+    } else {
+      // for ie
+      console.log(12);
+      setTimeout(() => {
+        const imgList = this.quill.container.querySelectorAll('img');
+        const $imgList = $(imgList);
+        // 这个代码可以放弃黏贴图片的功能
+        // if(src_str.indexOf('data:image/'>-1)) {
+        //   $imgList.remove();
+        // }
+        let src_str = '';
+        let i;
+        for (i = 0; i < imgList.length; i++) {
+          src_str = imgList[i].src;
+        }
+        console.log(src_str);
+        // const blob = this.dataURLtoBlob(src_str);
+        // IE有兼容问题，没时间研究
+        const selfFile = this.dataURLtofile(src_str, 'file');
+        if (this.config.action) {
+          this.uploadImg(selfFile);
+        } else {
+          this.toBase64();
+        }
+      }, 1000);
     }
+    console.log(34);
   }
 
   /**
@@ -131,17 +230,58 @@ export class ImageExtend {
     };
     reader.readAsDataURL(self.file);
   }
+  // base64转文件流
+  base64toFile(dataurl, filename = 'file') {
+    let arr = dataurl.split(',');
+    let mime = arr[0].match(/:(.*?);/)[1];
+    let suffix = mime.split('/')[1];
+    let bstr = atob(arr[1]);
+    let n = bstr.length;
+    let u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], `${filename}.${suffix}`, {
+      type: mime
+    });
+  }
+  dataURLtofile(dataurl, fileName) {
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      suffix = mime.split('/')[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    console.log(suffix);
+    const theBlob = new Blob([u8arr], { type: mime });
+    theBlob.lastModifiedDate = new Date();
+    theBlob.name = `${fileName}.${suffix}`;
+    return theBlob;
+  }
+  // blobToFile(theBlob, fileName) {
+  //   theBlob.lastModifiedDate = new Date();
+  //   theBlob.name = `${filename}.${suffix}`;
+  //   return theBlob;
+  // }
 
   /**
    * @description 上传图片到服务器
    */
-  uploadImg() {
+  uploadImg(sf) {
     const self = this;
     let quillLoading = self.quillLoading;
     let config = self.config;
+    // console.log(self)
     // 构造表单
     let formData = new FormData();
-    formData.append(config.name, self.file);
+    if (!sf) {
+      formData.append(config.name, self.file);
+    } else {
+      formData.append(config.name, sf);
+    }
     // 自定义修改表单
     if (config.editForm) {
       config.editForm(formData);
@@ -161,6 +301,7 @@ export class ImageExtend {
         if (xhr.status === 200) {
           //success
           let res = JSON.parse(xhr.responseText);
+          // console.log(res)
           self.imgURL = config.response(res);
           QuillWatch.active.uploadSuccess();
           self.insertImg();
@@ -211,7 +352,6 @@ export class ImageExtend {
    */
   insertImg() {
     const self = QuillWatch.active;
-    var length = self.quill.getLength();
     self.quill.insertEmbed(QuillWatch.active.cursorIndex, 'image', self.imgURL);
     self.quill.update();
     self.quill.setSelection(self.cursorIndex + 1);
@@ -232,15 +372,14 @@ export class ImageExtend {
    * 开始上传
    */
   uploading() {
-    // let index =
-    //   (QuillWatch.active.quill.getSelection() || {}).index ||
-    //   QuillWatch.active.quill.getLength();
-    QuillWatch.active.cursorIndex =
-      QuillWatch.active.quill.selection.savedRange.index; //当前光标位置
+    let length =
+      (QuillWatch.active.quill.getSelection() || {}).index ||
+      QuillWatch.active.quill.getLength();
+    QuillWatch.active.cursorIndex = length;
     QuillWatch.active.quill.insertText(
       QuillWatch.active.cursorIndex,
       '[uploading...]',
-      // { color: 'red' },
+      { color: 'red' },
       true
     );
   }
