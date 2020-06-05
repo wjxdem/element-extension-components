@@ -1,0 +1,51 @@
+<div class="single-table">
+  <div class="table">
+    <el-table :data="contents" highlight-current-row @row-click="showRow">
+      <el-table-column label="" width="50" align="center">
+        <template slot-scope="scope">
+          <el-radio :label="scope.$index" v-model="radio">&nbsp</el-radio>
+        </template>
+      </el-table-column>
+      <el-table-column v-for="(col, index) in columns" :key="index" :label="col.label"
+        :min-width="col.width? col.width: 80" :width="col.absoluteWidth? col.absoluteWidth : false"
+        :fixed="col.fixed? col.fixed: false" :show-overflow-tooltip="col.showTooltip"
+        :align="col.align? col.align: 'left'">
+        <template slot-scope="scope">
+          <!-- <span :class="col.class"> -->
+          <!--链接-->
+          <span v-if="col.type === 'link'" @click="col.onClick(scope.row)"><span
+              v-if="col.no">【{{scope.row[col.no]}}】</span>{{scope.row[col.prop]}}</span>
+          <!--一般文字-->
+          <span v-if="col.type === 'text' || col.type === undefined"
+            :style="{color: (scope.row['disable']? '#C0C4CD': (col.color? col.color : ''))}">
+            <span v-if="typeof scope.row[col.prop] === 'string'">{{scope.row[col.prop]}}</span>
+            <span v-else-if="scope.row[col.prop] === null">--</span>
+            <span v-else-if="typeof scope.row[col.prop] === 'number'">{{scope.row[col.prop]+''}}</span>
+            <span v-else-if="scope.row[col.prop] instanceof Array">
+              <p v-for="str of scope.row[col.prop]">{{str}}</p>
+            </span>
+          </span>
+          <!--序号从1开始-->
+          <div v-else-if="col.type==='index'">
+            {{scope.$index+1}}
+          </div>
+          <!--按钮-->
+          <el-link v-if="col.type === 'button' && scope.row[col.prop]" type="primary" @click="col.onClick(scope.row)"
+            :style="{color: (scope.row['disable']? '#C0C4CD': (col.color? col.color : ''))}" :underline="false">
+            {{scope.row[col.prop]}}
+          </el-link>
+          <span v-else-if="col.type === 'button' && !scope.row[col.prop]">--</span>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+  <div align="end">
+    <el-pagination v-if="pagination && pagination.total" class="pagination" small background
+      @size-change="pagination.sizeChange" @current-change="pagination.currentPageChange"
+      :current-page="pagination.currentPage?pagination.currentPage: 0 "
+      :page-sizes="pagination.pageSizes? pagination.pageSizes: [10, 20, 50]"
+      :page-size="pagination.currentPageSize? pagination.currentPageSize: 20"
+      layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
+    </el-pagination>
+  </div>
+</div>
