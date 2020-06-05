@@ -372,10 +372,7 @@ export class ImageExtend {
    * 开始上传
    */
   uploading() {
-    let length =
-      (QuillWatch.active.quill.getSelection() || {}).index ||
-      QuillWatch.active.quill.getLength();
-    QuillWatch.active.cursorIndex = length;
+    QuillWatch.active.cursorIndex = QuillWatch.active.quill.selection.savedRange.index; //当前光标位置;
     QuillWatch.active.quill.insertText(
       QuillWatch.active.cursorIndex,
       '[uploading...]',
