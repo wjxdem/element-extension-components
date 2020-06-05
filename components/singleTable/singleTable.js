@@ -1,6 +1,6 @@
 'user strict';
 import './singleTable.less';
-import { numberForm } from '../../utils/utils.js';
+import { numberForm } from '../utils.js';
 
 /**
  * 单选表格组件
