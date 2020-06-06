@@ -152,4 +152,13 @@ import singleTable from '@/components/singleTable/singleTable.vue';
   
   
   ```
+#### 5.基于el-popover,el-input的行内搜索下拉
+  ```javascript
+  用法：
+  
+  <inline-search-select  @select-change="handleChange"></inline-search-select>
+  
+  import inline-search-select from '@components/inline-search-select.vue';
 
+  
+  ```
