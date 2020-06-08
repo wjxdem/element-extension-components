@@ -110,6 +110,8 @@ import singleTable from '@/components/singleTable/singleTable.vue';
   ```javascript
   用法：<picturePreview :imgUrl="url" :isVisible="pictureVisible"></picturePreview>
   
+  import CommonTable from '@/components/picturePreview.vue';
+  
   添加指令：
     // v-dialogDragWidth: 弹窗宽度拖大 拖小
     Vue.directive('dialogDragWidth', {
