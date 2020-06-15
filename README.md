@@ -4,7 +4,7 @@
 
 #### 1.基于el-table和el-pagination表格分页组件  
   ```javascript
-
+使用：
   <common-table
       class="table"
       :columns="columns"
@@ -58,7 +58,7 @@
   
 #### 2.基于el-table，el-radio和el-pagination单选表格分页组件
   ```javascript
-
+使用：
 <single-table
   class="table"
   :columns="columns"
@@ -108,7 +108,7 @@ import singleTable from '@/components/singleTable/singleTable.vue';
   ```
 #### 3.基于el-dialog任意拖拽图片预览组件 picturePreview
   ```javascript
-  用法：<picturePreview :imgUrl="url" :isVisible="pictureVisible"></picturePreview>
+  使用：<picturePreview :imgUrl="url" :isVisible="pictureVisible"></picturePreview>
   
   import CommonTable from '@/components/picturePreview.vue';
   
@@ -140,7 +140,7 @@ import singleTable from '@/components/singleTable/singleTable.vue';
   ```
 #### 4.基于quill.js富文本编辑器，支持拖动上传图片
   ```javascript
-  <quill-editor :quillEditorContent="quillEditorContent"></quill-editor>
+  使用：<quill-editor :quillEditorContent="quillEditorContent"></quill-editor>
   
   import QuillEditor from '@components/quillEditor/quillEditor.vue';
   
@@ -156,7 +156,7 @@ import singleTable from '@/components/singleTable/singleTable.vue';
   ```
 #### 5.基于el-popover,el-input的行内搜索下拉
   ```javascript
-  用法：
+ 使用：
   
   <inline-search-select  @select-change="handleChange"></inline-search-select>
   
